@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6f3ed" />
+    <link rel="icon" type="image/png" href="./icon-192.png" />
+    <link rel="apple-touch-icon" href="./icon-192.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <title>Что на стол?</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Включите JavaScript, чтобы открыть подборку и коллекцию.</noscript>
+    <main id="legacy-migration" hidden>
+      <h1>Что на стол?</h1>
+      <p>Для запуска приложения используйте адрес из команды <code>npm run dev</code>.</p>
+      <p id="legacy-status"></p>
+      <button id="legacy-export" type="button" hidden>Скачать коллекцию</button>
+    </main>
+    <script>
+      if (location.protocol === 'file:') {
+        document.getElementById('legacy-migration').hidden = false;
+        const status = document.getElementById('legacy-status');
+        try {
+          const collection = localStorage.getItem('chto-na-stol.collection.v1');
+          if (collection === null) {
+            status.textContent = 'В этом браузере коллекции старой версии нет.';
+          } else {
+            status.textContent =
+              'Скачайте коллекцию и перенесите её через раздел «Коллекция» в новой версии.';
+            const button = document.getElementById('legacy-export');
+            button.hidden = false;
+            button.addEventListener('click', () => {
+              const url = URL.createObjectURL(new Blob([collection], { type: 'application/json' }));
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'chto-na-stol-collection.json';
+              link.click();
+              setTimeout(() => URL.revokeObjectURL(url), 0);
+            });
+          }
+        } catch {
+          status.textContent = 'Браузер не разрешил прочитать локальную коллекцию.';
+        }
+      }
+    </script>
+    <script type="module">
+      if (location.protocol !== 'file:') void import('./src/app/main.tsx');
+    </script>
+  </body>
+</html>

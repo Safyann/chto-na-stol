@@ -1,0 +1,100 @@
+.dialog {
+  width: min(36rem, 100% - 2rem);
+  max-height: calc(100% - 2rem);
+  padding: 1.5rem;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+}
+.dialog::backdrop {
+  background: #251b15a6;
+}
+.dialogHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+  overflow-wrap: anywhere;
+}
+.dialogHeading h2 {
+  font-size: clamp(1.625rem, 4vw, 2.5rem);
+  line-height: 1.12;
+}
+.gameMeta {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+.closeDialog {
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 1.5rem;
+}
+.closeDialog:hover {
+  background: #ede5d9;
+}
+.details section {
+  margin-top: 1.25rem;
+}
+.dialog dl {
+  margin: 0;
+}
+.dialog dt {
+  margin-top: 0.75rem;
+  font-weight: 700;
+}
+.dialog dd {
+  margin: 0.25rem 0 0;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.dialogActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.form {
+  display: grid;
+  gap: 0.75rem;
+}
+.form .dialogActions {
+  margin-top: 0;
+}
+.formColumns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.dialog fieldset {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+}
+.dialog legend {
+  padding-inline: 0.375rem;
+  font-weight: 700;
+}
+.saveError {
+  margin: 1rem 0 0;
+}
+@media (max-width: 35rem) {
+  .dialog {
+    padding: 1rem;
+  }
+  .formColumns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

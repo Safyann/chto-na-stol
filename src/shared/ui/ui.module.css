@@ -1,0 +1,121 @@
+.field {
+  display: grid;
+  gap: 0.375rem;
+  font-weight: 650;
+}
+.field input,
+.field textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #bcb2a5;
+  border-radius: 0.5rem;
+  background: white;
+  color: var(--ink);
+  font-weight: 400;
+}
+.field textarea {
+  resize: vertical;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: fit-content;
+  min-height: 2.75rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.check input {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0;
+  accent-color: var(--rust);
+}
+.button {
+  min-height: 2.75rem;
+  padding: 0.625rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-weight: 700;
+}
+.primary {
+  color: white;
+  background: var(--rust);
+}
+.primary:hover {
+  background: var(--rust-dark);
+}
+.primary span {
+  margin-left: 0.375rem;
+}
+.secondary {
+  border-color: #bcb2a5;
+  color: var(--ink);
+  background: var(--surface);
+}
+.secondary:hover {
+  background: #ede5d9;
+}
+.danger {
+  color: var(--rust-dark);
+}
+
+.notice,
+.empty {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--surface);
+}
+.notice {
+  margin-bottom: 1rem;
+}
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.pageTitle {
+  font-size: clamp(2.5rem, 6vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+}
+.sectionHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.noticeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 52rem) {
+  .cardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 35rem) {
+  .cardGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

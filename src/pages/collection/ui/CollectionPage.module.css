@@ -1,0 +1,9 @@
+.collectionHeading {
+  margin-block: 1rem 1.5rem;
+  flex-wrap: wrap;
+}
+.collectionActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
