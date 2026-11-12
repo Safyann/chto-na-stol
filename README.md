@@ -2,6 +2,8 @@
 
 «Что на стол?» помогает выбрать настольную игру из своей коллекции. Введите число игроков, свободное время и отметьте, есть ли новички. Приложение предложит до трёх игр и объяснит, почему они подходят.
 
+[Открыть приложение](https://safyann.github.io/chto-na-stol/)
+
 ## Попробовать
 
 При первом запуске коллекция пустая.
@@ -41,7 +43,7 @@ React 19, TypeScript, Vite и CSS Modules. Исходники организов
 
 Выполните `npm run build` и `npm run preview`. Откройте приложение онлайн, дождитесь активации сервис-воркера, отключите сеть и перезагрузите страницу. Подборка, шпаргалки и отметка о партии доступны офлайн. В Chrome и Edge приложение можно установить из меню браузера.
 
-Для публикации загрузите содержимое `dist/` на статический HTTPS-хостинг. [Сборка Vite](https://vite.dev/guide/static-deploy.html) · [Установка PWA](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable)
+После успешной сборки ветки `main` GitHub Actions публикует содержимое `dist/` на GitHub Pages. [Публикация через GitHub Actions](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages) · [Установка PWA](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable)
 
 ## Импорт коллекции
 
