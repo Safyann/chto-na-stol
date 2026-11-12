@@ -1,5 +1,4 @@
-export { type Game, hasNotes, noteFields } from './model/game';
-export { createDemoCollection } from './model/demoCatalog';
+export { type Game, hasNotes, noteFields, recordGamePlay } from './model/game';
 export {
   loadCollection,
   mergeCollection,

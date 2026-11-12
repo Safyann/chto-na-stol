@@ -9,7 +9,6 @@ interface CollectionPageProps {
   headingRef: Ref<HTMLHeadingElement>;
   onOpenGame: (game: Game, opener: HTMLButtonElement) => void;
   onAddGame: (opener: HTMLButtonElement) => void;
-  onRemoveDemo: () => boolean;
   onImport: (file: File) => void;
 }
 
@@ -19,10 +18,8 @@ export function CollectionPage({
   headingRef,
   onOpenGame,
   onAddGame,
-  onRemoveDemo,
   onImport,
 }: CollectionPageProps) {
-  const addButton = useRef<HTMLButtonElement>(null);
   const importInput = useRef<HTMLInputElement>(null);
 
   return (
@@ -37,7 +34,7 @@ export function CollectionPage({
             type="button"
             onClick={() => importInput.current?.click()}
           >
-            Перенести из старой версии
+            Импортировать коллекцию
           </button>
           <input
             ref={importInput}
@@ -51,7 +48,6 @@ export function CollectionPage({
             }}
           />
           <button
-            ref={addButton}
             className={`${ui.button} ${ui.primary}`}
             type="button"
             onClick={(event) => onAddGame(event.currentTarget)}
@@ -60,24 +56,6 @@ export function CollectionPage({
           </button>
         </div>
       </div>
-      {games.some((game) => game.demo) && (
-        <div className={`${ui.notice} ${ui.noticeRow}`}>
-          <p>
-            Здесь есть демоигры. Откройте карточку, чтобы оставить игру в своей коллекции или
-            изменить её.
-          </p>
-          <button
-            className={`${ui.button} ${ui.secondary}`}
-            type="button"
-            onClick={() => {
-              if (window.confirm('Убрать все демоигры из коллекции?') && onRemoveDemo())
-                addButton.current?.focus();
-            }}
-          >
-            Убрать демоигры
-          </button>
-        </div>
-      )}
       {games.length ? (
         <ul className={ui.cardGrid} role="list">
           {games.map((game) => (

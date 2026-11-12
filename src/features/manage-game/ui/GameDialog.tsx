@@ -8,7 +8,7 @@ interface GameDialogProps {
   game?: Game;
   onDismiss: () => void;
   onSave: (game: Game) => boolean;
-  onMarkPlayed: (game: Game) => boolean;
+  onMarkPlayed: (game: Game, selectedExpansions: string[]) => boolean;
   onRemove: (game: Game) => boolean;
 }
 
@@ -17,6 +17,7 @@ const noteKeys = Object.keys(noteFields) as (keyof typeof noteFields)[];
 export function GameDialog({ game, onDismiss, onSave, onMarkPlayed, onRemove }: GameDialogProps) {
   const [editing, setEditing] = useState(!game);
   const [saveFailed, setSaveFailed] = useState(false);
+  const [selectedExpansions, setSelectedExpansions] = useState<string[]>([]);
   const dialog = useRef<HTMLDialogElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const titleInput = useRef<HTMLInputElement>(null);
@@ -54,6 +55,11 @@ export function GameDialog({ game, onDismiss, onSave, onMarkPlayed, onRemove }: 
       return;
     }
 
+    const lastPlayed = String(fields.get('lastPlayed'));
+    const expansionNames = String(fields.get('expansions'))
+      .split('\n')
+      .map((name) => name.trim())
+      .filter(Boolean);
     const saved = onSave({
       ...game,
       id: game?.id ?? `game-${crypto.randomUUID()}`,
@@ -62,9 +68,10 @@ export function GameDialog({ game, onDismiss, onSave, onMarkPlayed, onRemove }: 
       maxPlayers,
       minutes: Number(fields.get('minutes')),
       beginners: fields.has('beginners'),
-      lastPlayed: String(fields.get('lastPlayed')),
+      lastPlayed,
+      expansions: [...new Set(expansionNames)],
+      lastPlayedExpansions: lastPlayed === game?.lastPlayed ? game.lastPlayedExpansions : undefined,
       notes: Object.fromEntries(noteKeys.map((key) => [key, String(fields.get(key)).trim()])),
-      demo: false,
     });
     if (saved) onDismiss();
     else setSaveFailed(true);
@@ -77,6 +84,12 @@ export function GameDialog({ game, onDismiss, onSave, onMarkPlayed, onRemove }: 
   }
 
   const title = editing ? (game ? 'Редактировать игру' : 'Добавить игру') : game?.title;
+  const expansions = game?.expansions ?? [];
+  const lastPlayedExpansions = game?.lastPlayedExpansions;
+  const showLastPlayedExpansions =
+    game?.lastPlayed &&
+    lastPlayedExpansions &&
+    (expansions.length > 0 || lastPlayedExpansions.length > 0);
 
   return (
     <dialog
@@ -163,6 +176,20 @@ export function GameDialog({ game, onDismiss, onSave, onMarkPlayed, onRemove }: 
               defaultValue={game?.lastPlayed}
             />
           </label>
+          <div className={ui.field}>
+            <label htmlFor="game-expansions">Дополнения</label>
+            <small id="expansions-hint" className={styles.hint}>
+              Одно название на строку.
+            </small>
+            <textarea
+              id="game-expansions"
+              name="expansions"
+              rows={2}
+              maxLength={1200}
+              aria-describedby="expansions-hint"
+              defaultValue={expansions.join('\n')}
+            />
+          </div>
           <fieldset>
             <legend>Шпаргалка</legend>
             {noteKeys.map((key) => (
@@ -194,7 +221,23 @@ export function GameDialog({ game, onDismiss, onSave, onMarkPlayed, onRemove }: 
           <p className={styles.gameMeta}>
             {gameMeta(game)} · {game.beginners ? 'Подходит новичкам' : 'Для опытных игроков'}
           </p>
-          <p aria-live="polite">{lastPlayedLabel(game)}</p>
+          {game.sourceUrl && (
+            <p className={styles.gameMeta}>
+              <a href={game.sourceUrl} target="_blank" rel="noreferrer">
+                Карточка игры на сайте
+              </a>
+            </p>
+          )}
+          <div aria-live="polite">
+            <p>{lastPlayedLabel(game)}</p>
+            {showLastPlayedExpansions && (
+              <p className={styles.gameMeta}>
+                {lastPlayedExpansions.length
+                  ? `С дополнениями: ${lastPlayedExpansions.join(', ')}`
+                  : 'Без дополнений'}
+              </p>
+            )}
+          </div>
           <section aria-labelledby="notes-title">
             <h3 id="notes-title">Шпаргалка</h3>
             {hasNotes(game) ? (
@@ -213,11 +256,32 @@ export function GameDialog({ game, onDismiss, onSave, onMarkPlayed, onRemove }: 
               <p>Добавьте заметки о подготовке, первом ходе и правиле, которое легко забыть.</p>
             )}
           </section>
+          {expansions.length > 0 && (
+            <fieldset className={styles.expansionPicker}>
+              <legend>Дополнения на эту партию</legend>
+              <p className={styles.hint}>Для базовой игры оставьте флажки пустыми.</p>
+              {expansions.map((name) => (
+                <label className={ui.check} key={name}>
+                  <input
+                    type="checkbox"
+                    checked={selectedExpansions.includes(name)}
+                    onChange={(event) => {
+                      const checked = event.currentTarget.checked;
+                      setSelectedExpansions((current) =>
+                        checked ? [...current, name] : current.filter((item) => item !== name),
+                      );
+                    }}
+                  />
+                  {name}
+                </label>
+              ))}
+            </fieldset>
+          )}
           <div className={styles.dialogActions}>
             <button
               className={`${ui.button} ${ui.primary}`}
               type="button"
-              onClick={() => setSaveFailed(!onMarkPlayed(game))}
+              onClick={() => setSaveFailed(!onMarkPlayed(game, selectedExpansions))}
             >
               Сыграли
             </button>

@@ -28,7 +28,10 @@ export function GameCard({ game, description, heading: Heading, onOpen }: GameCa
       </div>
       <div className={styles.gameBody}>
         <Heading className={styles.gameTitle}>{game.title}</Heading>
-        <p className={styles.gameMeta}>{gameMeta(game)}</p>
+        <p className={styles.gameMeta}>
+          {gameMeta(game)}
+          {game.expansions?.length ? ' · Есть дополнения' : ''}
+        </p>
         <p className={styles.gameDescription}>{description}</p>
         <button
           className={styles.openGame}

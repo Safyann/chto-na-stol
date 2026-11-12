@@ -3,6 +3,7 @@ import {
   mergeCollection,
   parseCollection,
   readCollection,
+  recordGamePlay,
   saveCollection,
   type Game,
 } from '../entities/game';
@@ -93,11 +94,12 @@ export function App({ games: initialGames, storageError }: AppProps) {
     );
   }
 
-  function markPlayed(game: Game) {
+  function markPlayed(game: Game, selectedExpansions: string[]) {
+    const date = localDate();
     return save(
       (current) =>
         current.map((item) =>
-          item.id === game.id ? { ...item, lastPlayed: localDate(), demo: false } : item,
+          item.id === game.id ? recordGamePlay(item, date, selectedExpansions) : item,
         ),
       `Партия в «${game.title}» записана.`,
     );
@@ -106,9 +108,9 @@ export function App({ games: initialGames, storageError }: AppProps) {
   async function importCollection(file: File) {
     try {
       const imported = parseCollection(await file.text());
-      save((current) => mergeCollection(current, imported), 'Коллекция перенесена.');
+      save((current) => mergeCollection(current, imported), 'Коллекция импортирована.');
     } catch {
-      setError('Не удалось прочитать файл. Выберите JSON, сохранённый из старой версии.');
+      setError('Не удалось импортировать коллекцию. Выберите корректный JSON-файл.');
     }
   }
 
@@ -166,9 +168,6 @@ export function App({ games: initialGames, storageError }: AppProps) {
           headingRef={collectionHeading}
           onOpenGame={(game, button) => openDialog(button, game.id)}
           onAddGame={openDialog}
-          onRemoveDemo={() =>
-            save((current) => current.filter((game) => !game.demo), 'Демоигры убраны.')
-          }
           onImport={(file) => void importCollection(file)}
         />
       </main>
