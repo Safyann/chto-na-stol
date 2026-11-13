@@ -1,4 +1,4 @@
-export { type Game, hasNotes, noteFields, recordGamePlay } from './model/game';
+export { type Game, getQuickGuide, hasNotes, noteFields, recordGamePlay } from './model/game';
 export {
   loadCollection,
   mergeCollection,

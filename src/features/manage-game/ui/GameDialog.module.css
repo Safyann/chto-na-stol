@@ -33,6 +33,9 @@
   font-size: 0.875rem;
   font-weight: 400;
 }
+.rulesLink {
+  margin-top: 0.75rem;
+}
 .closeDialog {
   flex: none;
   width: 2.75rem;

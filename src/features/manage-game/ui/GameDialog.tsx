@@ -1,5 +1,11 @@
 import { Fragment, useLayoutEffect, useRef, useState, type FormEvent } from 'react';
-import { gameMeta, hasNotes, lastPlayedLabel, noteFields, type Game } from '../../../entities/game';
+import {
+  gameMeta,
+  getQuickGuide,
+  lastPlayedLabel,
+  noteFields,
+  type Game,
+} from '../../../entities/game';
 import { localDate } from '../../../shared/lib/date';
 import ui from '../../../shared/ui/ui.module.css';
 import styles from './GameDialog.module.css';
@@ -85,6 +91,8 @@ export function GameDialog({ game, onDismiss, onSave, onMarkPlayed, onRemove }: 
 
   const title = editing ? (game ? 'Редактировать игру' : 'Добавить игру') : game?.title;
   const expansions = game?.expansions ?? [];
+  const guide = game ? getQuickGuide(game) : undefined;
+  const personalNotes = game && noteKeys.some((key) => game.notes[key]) ? game.notes : undefined;
   const lastPlayedExpansions = game?.lastPlayedExpansions;
   const showLastPlayedExpansions =
     game?.lastPlayed &&
@@ -238,24 +246,45 @@ export function GameDialog({ game, onDismiss, onSave, onMarkPlayed, onRemove }: 
               </p>
             )}
           </div>
-          <section aria-labelledby="notes-title">
-            <h3 id="notes-title">Шпаргалка</h3>
-            {hasNotes(game) ? (
+          {guide && (
+            <section aria-labelledby="guide-title">
+              <h3 id="guide-title">Быстрый старт</h3>
+              <p className={styles.hint}>Базовая игра</p>
               <dl>
-                {noteKeys.map(
-                  (key) =>
-                    game.notes[key] && (
-                      <Fragment key={key}>
-                        <dt>{noteFields[key]}</dt>
-                        <dd>{game.notes[key]}</dd>
-                      </Fragment>
-                    ),
-                )}
+                {noteKeys.map((key) => (
+                  <Fragment key={key}>
+                    <dt>{noteFields[key]}</dt>
+                    <dd>{guide.notes[key]}</dd>
+                  </Fragment>
+                ))}
               </dl>
-            ) : (
-              <p>Добавьте заметки о подготовке, первом ходе и правиле, которое легко забыть.</p>
-            )}
-          </section>
+              <p className={styles.rulesLink}>
+                <a href={guide.rulesUrl} target="_blank" rel="noreferrer">
+                  Полные правила и схемы
+                </a>
+              </p>
+            </section>
+          )}
+          {(personalNotes || !guide) && (
+            <section aria-labelledby="notes-title">
+              <h3 id="notes-title">Мои заметки</h3>
+              {personalNotes ? (
+                <dl>
+                  {noteKeys.map(
+                    (key) =>
+                      personalNotes[key] && (
+                        <Fragment key={key}>
+                          <dt>{noteFields[key]}</dt>
+                          <dd>{personalNotes[key]}</dd>
+                        </Fragment>
+                      ),
+                  )}
+                </dl>
+              ) : (
+                <p>Добавьте заметки о подготовке, первом ходе и правиле, которое легко забыть.</p>
+              )}
+            </section>
+          )}
           {expansions.length > 0 && (
             <fieldset className={styles.expansionPicker}>
               <legend>Дополнения на эту партию</legend>

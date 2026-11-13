@@ -1,3 +1,5 @@
+import { quickGuides } from './quickGuides';
+
 export type Art = 'moon' | 'words' | 'tiles';
 
 export type Notes = Partial<Record<keyof typeof noteFields, string>>;
@@ -24,7 +26,11 @@ export const noteFields = {
 };
 
 export function hasNotes(game: Game) {
-  return Object.values(game.notes).some(Boolean);
+  return Boolean(getQuickGuide(game)) || Object.values(game.notes).some(Boolean);
+}
+
+export function getQuickGuide(game: Game) {
+  return Object.hasOwn(quickGuides, game.id) ? quickGuides[game.id] : undefined;
 }
 
 export function recordGamePlay(game: Game, date: string, selectedExpansions: string[]): Game {

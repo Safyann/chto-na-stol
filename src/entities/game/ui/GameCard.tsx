@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { hasNotes, type Game } from '../model/game';
+import { getGameCover } from '../model/gameCovers';
 import { gameMeta } from './gameLabels';
 import styles from './GameCard.module.css';
 
@@ -18,14 +20,29 @@ const artStyles = {
 
 export function GameCard({ game, description, heading: Heading, onOpen }: GameCardProps) {
   const label = hasNotes(game) ? 'Шпаргалка' : 'Открыть игру';
+  const cover = getGameCover(game.id);
+  const [failedCover, setFailedCover] = useState<string>();
+  const showCover = cover && failedCover !== cover;
 
   return (
     <li className={styles.gameCard}>
-      <div className={`${styles.gameArt} ${artStyles[game.art ?? 'pattern']}`} aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
+      {showCover ? (
+        <div className={styles.coverFrame}>
+          <img
+            src={cover}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            onError={() => setFailedCover(cover)}
+          />
+        </div>
+      ) : (
+        <div className={`${styles.gameArt} ${artStyles[game.art ?? 'pattern']}`} aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+      )}
       <div className={styles.gameBody}>
         <Heading className={styles.gameTitle}>{game.title}</Heading>
         <p className={styles.gameMeta}>
